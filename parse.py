@@ -83,9 +83,13 @@ def get_title_from_pdf(pdf_folder_path, pdf_file_name):
     with open(os.path.join(pdf_folder_path, pdf_file_name), 'rb') as f:
         pdf = PdfReader(f)
         info = pdf.metadata
-        title = info['/Title']
+        try:
+            title = info['/Title']
+        except:
+            title = ""
 
         if len(title.strip()) == 0:
+            print("Extracting title from pdf text, might have to fix")
             split_filename = pdf_file_name.split('-')
             index = 2 
             for i in range(len(split_filename)):
@@ -101,7 +105,6 @@ def get_title_from_pdf(pdf_folder_path, pdf_file_name):
                 if split_just_title[0].lower() in line.lower():
                     title = line
                     break
-            print("Getting title from pdf text, might need to fix")
 
     return title
 
@@ -132,9 +135,10 @@ def create_note_file(pdf_folder_path, note_dir, key, pdf_file_name):
 
 if __name__ == "__main__":
     # TODO: Add command line parsing
-    zotero_directory = './test'
-    pdf_dir = './PDFs'
-    note_dir = './Notes'
+    zotero_directory = ''
+    current_path = os.path.dirname(__file__)
+    pdf_dir = os.path.join(current_path, '../PDFs')
+    note_dir = os.path.join(current_path, '../Notes')
     dict_name = ".paper_dict"
     
     paper_dict = load_dict(dict_name, note_dir)
