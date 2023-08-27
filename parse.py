@@ -20,6 +20,7 @@ def load_dict(dict_file, note_dir):
             return -1
         
         paper_dict[key_value_list[0]] = key_value_list[1].strip()
+
     return paper_dict
 
 def generate_dict(dict_file, note_dir):
@@ -69,8 +70,14 @@ def has_PDF(folder):
 
 def generate_key(pdf_file_name):
     split_file_name = pdf_file_name.split("-")
-
-    return "".join([split_file_name[0], split_file_name[1].strip()])
+    year = 1
+    for i in range(len(split_file_name)):
+        if split_file_name[i].strip().isnumeric():
+            year = i
+            break
+    
+    name_str = "-".join(split_file_name[0:year])
+    return "".join([name_str, split_file_name[year].strip()])
 
 def update_key(key):
     if key[-1].isdigit():
@@ -100,7 +107,6 @@ def get_title_from_pdf(pdf_folder_path, pdf_file_name):
             split_just_title = just_title.split('.')
 
             text = pdf.pages[0].extract_text()
-            print(text)
             for line in text.split('\n'):
                 if split_just_title[0].lower() in line.lower():
                     title = line
